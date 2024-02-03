@@ -10,6 +10,8 @@ var con = mysql.createConnection({
   database: "next-usuarios",
 });
 
+app.use(express.text());
+
 app.get("/:table/obtenerTodos", (req, res) => {
   con.query("SELECT * FROM " + req.params.table, (err, res, fields) =>
     console.log(res)
@@ -108,4 +110,19 @@ app.post("/leccion/crearLeccion", (req, res) => {
 
 app.listen("8080", () => {
   console.log("Servidor escuchando en el puerto 8080.");
+});
+
+app.post("/usuario/registrarUsuario", (req, res) => {
+  try {
+    const body = JSON.parse(req.body);
+    con.query(
+      `INSERT INTO usuario (usuario_nombre, usuario_apellido, usuario_email, usuario_tipo, usuario_clave) VALUES ('${body.nombre}', '${body.apellido}', '${body.email}', '${body.tipo}', '${body.clave}')`,
+      (err, response, fields) => {
+        res.status(200).send(response);
+      }
+    );
+  } catch (error) {
+    res.status(501);
+    throw error;
+  }
 });
