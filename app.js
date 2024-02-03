@@ -118,7 +118,11 @@ app.post("/usuario/registrarUsuario", (req, res) => {
     con.query(
       `INSERT INTO usuario (usuario_nombre, usuario_apellido, usuario_email, usuario_tipo, usuario_clave) VALUES ('${body.nombre}', '${body.apellido}', '${body.email}', '${body.tipo}', '${body.clave}')`,
       (err, response, fields) => {
-        res.status(200).send(response);
+        res
+          .status(200)
+          .header("Access-Control-Allow-Origin", "*")
+          .send(response);
+        if (err) res.status(501).send("Error al crear el usuario.");
       }
     );
   } catch (error) {
