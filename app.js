@@ -13,9 +13,9 @@ var con = mysql.createConnection({
 app.use(express.text());
 
 app.get("/:table/obtenerTodos", (req, res) => {
-  con.query("SELECT * FROM " + req.params.table, (err, res, fields) =>
-    console.log(res)
-  );
+  con.query("SELECT * FROM " + req.params.table, (err, response, fields) => {
+    res.status(200).header("Access-Control-Allow-Origin", "*").send(response);
+  });
 });
 
 app.get("/:table/obtenerSegunId/:id", (req, res) => {
@@ -62,3 +62,23 @@ app.post("/usuario/registrarUsuario", (req, res) => {
     throw error;
   }
 });
+
+app.get("/usuario_curso/obtenerCursosUsuario/:usuario_id", (req, res) => {
+  try {
+    con.query(
+      "SELECT * FROM usuario_curso JOIN curso ON curso_id = usuario_curso_curso WHERE usuario_curso_usuario = " +
+        req.params.usuario_id,
+      (err, response, fields) => {
+        res
+          .status(200)
+          .header("Access-Control-Allow-Origin", "*")
+          .send(response);
+      }
+    );
+  } catch (error) {
+    res.status(501);
+    throw error;
+  }
+});
+
+app.listen(8080, () => console.log("Servidor funcionando en el puerto 8080"));
