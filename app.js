@@ -81,4 +81,22 @@ app.get("/usuario_curso/obtenerCursosUsuario/:usuario_id", (req, res) => {
   }
 });
 
+app.post("/leccion/crearLeccion", (req, res) => {
+  try {
+    const body = JSON.parse(req.body);
+    con.query(
+      `INSERT INTO leccion (leccion_unidad, leccion_nombre, leccion_contenido) VALUES ('${body.leccion_unidad}', '${body.leccion_nombre}', '${body.leccion_contenido}')`,
+      (err, response, fields) => {
+        res
+          .header("Access-Control-Allow-Origin", "*")
+          .status(200)
+          .send(response);
+        if (err) res.status(501).send("Error al crear el usuario.");
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 app.listen(8080, () => console.log("Servidor funcionando en el puerto 8080"));
