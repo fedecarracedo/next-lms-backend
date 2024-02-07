@@ -81,6 +81,17 @@ app.get("/usuario_curso/obtenerCursosUsuario/:usuario_id", (req, res) => {
   }
 });
 
+app.post("/unidad/crearUnidad", (req, res) => {
+  const body = JSON.parse(req.body);
+  con.query(
+    `INSERT INTO unidad (unidad_nombre, unidad_curso, unidad_orden) VALUES ('${body.unidad_nombre}', '${body.unidad_curso}', '${body.unidad_orden}')`,
+    (err, response, fields) => {
+      res.header("Access-Control-Allow-Origin", "*").status(200).send(response);
+      if (err) res.status(501).send("Error al crear el usuario.");
+    }
+  );
+});
+
 app.post("/leccion/crearLeccion", (req, res) => {
   try {
     const body = JSON.parse(req.body);
