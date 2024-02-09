@@ -23,6 +23,7 @@ app.get("/:table/obtenerSegunId/:id", (req, res) => {
     `SELECT * FROM ${req.params.table} WHERE ${req.params.table}_id = ${req.params.id}`,
     (err, response, fields) => {
       res.status(200).header("Access-Control-Allow-Origin", "*").send(response);
+      if (err) console.log(err);
     }
   );
 });
@@ -51,12 +52,12 @@ app.post("/usuario/registrarUsuario", (req, res) => {
       `INSERT INTO usuario (usuario_nombre, usuario_apellido, usuario_email, usuario_tipo, usuario_clave) VALUES ('${body.nombre}', '${body.apellido}', '${body.email}', '${body.tipo}', '${body.clave}')`,
       (err, response, fields) => {
         res
-        .header("Access-Control-Allow-Origin", "*")
+          .header("Access-Control-Allow-Origin", "*")
           .status(200)
           .send(response);
         if (err) {
-          console.log(err)
-          res.status(501).send("Error al crear el usuario.")
+          console.log(err);
+          res.status(501).send("Error al crear el usuario.");
         }
       }
     );
@@ -106,6 +107,39 @@ app.post("/leccion/crearLeccion", (req, res) => {
           .status(200)
           .send(response);
         if (err) res.status(501).send("Error al crear el usuario.");
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.post("/curso/crearCurso", (req, res) => {
+  try {
+    const body = JSON.parse(req.body);
+    con.query(
+      `INSERT INTO curso (curso_nombre, curso_descripcion) VALUES ('${body.curso_nombre}', '${body.curso_descripcion}')`,
+      (err, response, fields) => {
+        res
+          .header("Access-Control-Allow-Origin", "*")
+          .status(200)
+          .send(response);
+        if (err) res.status(501).send("Error al crear el usuario.");
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.post("/leccion/modificarLeccion", (req, res) => {
+  try {
+    const body = JSON.parse(req.body);
+    con.query(
+      `UPDATE leccion SET leccion_contenido = '${body.leccion_contenido}'`,
+      (err, response, fields) => {
+        res.header("Access-Control-Allow-Origin", "*").status(200);
+        if (err) res.status(501).send("Error al modificar la leccion.");
       }
     );
   } catch (error) {
