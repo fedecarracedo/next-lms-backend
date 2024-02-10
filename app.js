@@ -100,7 +100,7 @@ app.post("/leccion/crearLeccion", (req, res) => {
   try {
     const body = JSON.parse(req.body);
     con.query(
-      `INSERT INTO leccion (leccion_unidad, leccion_nombre, leccion_contenido) VALUES ('${body.leccion_unidad}', '${body.leccion_nombre}', '${body.leccion_contenido}')`,
+      `INSERT INTO leccion (leccion_unidad, leccion_nombre, leccion_contenido, leccion_orden) VALUES ('${body.leccion_unidad}', '${body.leccion_nombre}', '${body.leccion_contenido}', '${body.leccion_orden}')`,
       (err, response, fields) => {
         res
           .header("Access-Control-Allow-Origin", "*")
@@ -161,6 +161,42 @@ app.get("/usuario/obtenerUsuarios", (req, res) => {
   } catch (error) {
     res.status(201);
     throw error;
+  }
+});
+
+app.post("/leccion/completarLeccion", (req, res) => {
+  try {
+    const body = JSON.parse(req.body);
+    con.query(
+      `INSERT INTO usuario_leccion (usuario_id, leccion_id) VALUES ('${body.usuario_id}', '${body.leccion_id}')`,
+      (err, response, fields) => {
+        res
+          .header("Access-Control-Allow-Origin", "*")
+          .status(200)
+          .send(response);
+        if (err) console.log(err);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.get("/:table/deleteElementById/:elementId", (req, res) => {
+  try {
+    con.query(
+      `DELETE FROM ${req.params.table} WHERE ${req.params.table}_id = ${req.params.elementId}`,
+      (err, response, fields) => {
+        res
+          .header("Access-Control-Allow-Origin", "*")
+          .header("Access-Control-Allow-Credentials", "false")
+          .status(200)
+          .send("Deleted.");
+        if (err) console.log(err);
+      }
+    );
+  } catch (error) {
+    console.log(error);
   }
 });
 
