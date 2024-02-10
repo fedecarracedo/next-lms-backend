@@ -136,7 +136,7 @@ app.post("/leccion/modificarLeccion", (req, res) => {
   try {
     const body = JSON.parse(req.body);
     con.query(
-      `UPDATE leccion SET leccion_contenido = '${body.leccion_contenido}'`,
+      `UPDATE leccion SET leccion_contenido = '${body.leccion_contenido}' WHERE leccion_id = '${body.leccion_id}'`,
       (err, response, fields) => {
         res.header("Access-Control-Allow-Origin", "*").status(200);
         if (err) res.status(501).send("Error al modificar la leccion.");
@@ -144,6 +144,23 @@ app.post("/leccion/modificarLeccion", (req, res) => {
     );
   } catch (error) {
     console.log(error);
+  }
+});
+
+app.get("/usuario/obtenerUsuarios", (req, res) => {
+  try {
+    con.query(
+      `SELECT usuario_nombre, usuario_apellido, usuario_email, usuario_tipo FROM usuario `,
+      (err, response, fields) => {
+        res
+          .status(200)
+          .header("Access-Control-Allow-Origin", "*")
+          .send(response);
+      }
+    );
+  } catch (error) {
+    res.status(201);
+    throw error;
   }
 });
 
