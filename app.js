@@ -164,6 +164,24 @@ app.get("/usuario/obtenerUsuarios", (req, res) => {
   }
 });
 
+app.get("/curso/obtenerUsuarios/:cursoId", (req, res) => {
+  try {
+    con.query(
+      `SELECT * FROM usuario_curso JOIN usuario ON usuario_id = usuario_curso_usuario WHERE usuario_curso_curso = ${req.params.cursoId}`,
+      (err, response, fields) => {
+        res
+          .status(200)
+          .header("Access-Control-Allow-Origin", "*")
+          .send(response);
+        if (err) console.log(err);
+      }
+    );
+  } catch (error) {
+    res.status(201);
+    throw error;
+  }
+});
+
 app.post("/leccion/completarLeccion", (req, res) => {
   try {
     const body = JSON.parse(req.body);
