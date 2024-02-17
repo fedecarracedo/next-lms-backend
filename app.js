@@ -218,4 +218,25 @@ app.get("/:table/deleteElementById/:elementId", (req, res) => {
   }
 });
 
+app.get(
+  "/usuario_curso/desmatricularUsuario/:idUsuario/:idCurso",
+  (req, res) => {
+    try {
+      con.query(
+        `DELETE FROM usuario_curso WHERE usuario_curso_usuario = ${req.params.idUsuario} AND usuario_curso_curso = ${req.params.idCurso}`,
+        (err, response, fields) => {
+          res
+            .header("Access-Control-Allow-Origin", "*")
+            .header("Access-Control-Allow-Credentials", "false")
+            .status(200)
+            .send("Deleted.");
+          if (err) console.log(err);
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 app.listen(8080, () => console.log("Servidor funcionando en el puerto 8080"));
