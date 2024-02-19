@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+const bcrypt = require("bcrypt");
+const dotenv = require("dotenv").config();
 
 var mysql = require("mysql");
 
@@ -238,5 +240,49 @@ app.get(
     }
   }
 );
+
+/*
+{
+  curso_id,
+  nombre_organizacion,
+  fecha_expiracion,
+  aula_id
+}
+
+*/
+
+app.post("/curso/generateInviteInfo", async (req, res) => {
+  try {
+    const body = JSON.parse(req.body);
+    const hashedSecret = await bcrypt.hash(process.env.TOKEN_SECRET, 5);
+    body["token"] = await bcrypt.hash(req.body + hashedSecret, 10);
+    const base64 = btoa(JSON.stringify(body));
+    res.status(200).send(base64);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.post("/curso/validateInviteInfo", async (req, res) => {
+  try {
+    const jsonBodyString = atob(req.body);
+    const bodyObj = JSON.parse(jsonBodyString);
+    const providedToken = bodyObj["token"];
+    delete bodyObj["token"];
+    const hashedSecret = await bcrypt.hash(process.env.TOKEN_SECRET, 5);
+    const tokenIsCorrect = await bcrypt.compare(
+      jsonBodyString + hashedSecret,
+      providedToken
+    );
+    if (
+      tokenIsCorrect &&
+      new Date(bodyObj.fecha_expiracion).getTime() >= new Date().getTime()
+    )
+      res.status(200).send("Token is valid.");
+    else res.status(401).send("Token is not valid.");
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 app.listen(8080, () => console.log("Servidor funcionando en el puerto 8080"));
