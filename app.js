@@ -251,7 +251,7 @@ app.get(
 
 */
 
-app.post("/curso/generateInviteInfo", async (req, res) => {
+app.post("/aula/generateInviteInfo", async (req, res) => {
   try {
     const body = JSON.parse(req.body);
     const hashedSecret = await bcrypt.hash(process.env.TOKEN_SECRET, 5);
@@ -263,7 +263,7 @@ app.post("/curso/generateInviteInfo", async (req, res) => {
   }
 });
 
-app.post("/curso/validateInviteInfo", async (req, res) => {
+app.post("/aula/validateInviteInfo", async (req, res) => {
   try {
     const jsonBodyString = atob(req.body);
     const bodyObj = JSON.parse(jsonBodyString);
