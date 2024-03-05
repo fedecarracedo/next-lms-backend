@@ -69,10 +69,10 @@ app.post("/usuario/registrarUsuario", (req, res) => {
   }
 });
 
-app.get("/usuario_curso/obtenerCursosUsuario/:usuario_id", (req, res) => {
+app.get("/usuario_aula/obtenerAulasUsuario/:usuario_id", (req, res) => {
   try {
     con.query(
-      "SELECT * FROM usuario_curso JOIN curso ON curso_id = usuario_curso_curso WHERE usuario_curso_usuario = " +
+      "SELECT * FROM usuario_aula JOIN aula ON aula_id = usuario_aula_aula WHERE usuario_aula_usuario = " +
         req.params.usuario_id,
       (err, response, fields) => {
         res
@@ -263,7 +263,34 @@ app.post("/aula/generateInviteInfo", async (req, res) => {
   }
 });
 
-app.post("/aula/validateInviteInfo", async (req, res) => {
+app.post("/aula/crearAula", async (req, res) => {
+  try {
+    const body = JSON.parse(req.body);
+    con.query(
+      `INSERT INTO aula (aula_nombre, aula_descripcion, aula_curso, aula_inicio) VALUES ('${body.aula_nombre}', '${body.aula_descripcion}', '${body.aula_curso}', '${body.aula_inicio}')`,
+      (err, response, fields) => {
+        if (err) {
+          res
+            .header("Access-Control-Allow-Origin", "*")
+            .header("Access-Control-Allow-Credentials", "false")
+            .status(501)
+            .send("Error: " + err);
+          console.log(err);
+        } else {
+          res
+            .header("Access-Control-Allow-Origin", "*")
+            .header("Access-Control-Allow-Credentials", "false")
+            .status(200)
+            .send("Created.");
+        }
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.post("/aula/crearAula", async (req, res) => {
   try {
     const jsonBodyString = atob(req.body);
     const bodyObj = JSON.parse(jsonBodyString);
